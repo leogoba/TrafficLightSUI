@@ -72,6 +72,7 @@ struct ContentView: View {
                 }) {
                     ZStack {
                         Capsule()
+                            .overlay(Capsule().stroke(Color.white, lineWidth: 4))
                             .frame(width: 250, height: 80)
                         Text(buttonLabel)
                             .font(.largeTitle)
