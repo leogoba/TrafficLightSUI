@@ -9,53 +9,81 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @State var redOpacity = 0.3
+    @State var yellowOpacity = 0.3
+    @State var greenOpacity = 0.3
+    @State var buttonLabel = "START"
+    
     private var redLight: some View {
         Circle()
-            .frame(width: 100, height: 100)
+            .frame(width: 123, height: 123)
             .foregroundColor(.red)
-            .opacity(0.3)
+            .opacity(redOpacity)
             .overlay(Circle().stroke(Color.white, lineWidth: 4))
             .shadow(radius: 10)
     }
-    
+
     private var yellowLight: some View {
         Circle()
-            .frame(width: 100, height: 100)
+            .frame(width: 123, height: 123)
             .foregroundColor(.yellow)
-            .opacity(0.3)
+            .opacity(yellowOpacity)
             .overlay(Circle().stroke(Color.white, lineWidth: 4))
             .shadow(radius: 10)
     }
-    
+
     private var greenLight: some View {
         Circle()
-            .frame(width: 100, height: 100)
+            .frame(width: 123, height: 123)
             .foregroundColor(.green)
-            .opacity(0.3)
+            .opacity(greenOpacity)
             .overlay(Circle().stroke(Color.white, lineWidth: 4))
             .shadow(radius: 10)
     }
     
     
     var body: some View {
-        VStack {
-            redLight
-            yellowLight
-            greenLight
+        ZStack {
+            Color(.black)
+                .ignoresSafeArea()
             
-            Spacer()
-            
-            Button("START") {
-                redLight.opacity(qwe())
+            VStack {
+                redLight
+                yellowLight
+                    .padding()
+                greenLight
+                
+                Spacer()
+
+                Button(action: {
+                    if buttonLabel == "START" {
+                        redOpacity = 1.0
+                        buttonLabel = "NEXT"
+                    } else if redOpacity == 1.0 {
+                        redOpacity = 0.3
+                        yellowOpacity = 1.0
+                    } else if yellowOpacity == 1.0 {
+                        yellowOpacity = 0.3
+                        greenOpacity = 1.0
+                    } else {
+                        greenOpacity = 0.3
+                        redOpacity = 1.0
+                    }
+                }) {
+                    ZStack {
+                        Capsule()
+                            .frame(width: 250, height: 80)
+                        Text(buttonLabel)
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                    }
+                    
+                    
+                }
             }
+            .padding()
         }
-        .padding()
     }
-    
-    func qwe() -> Double {
-        1.0
-    }
-    
 }
 
 struct ContentView_Previews: PreviewProvider {
