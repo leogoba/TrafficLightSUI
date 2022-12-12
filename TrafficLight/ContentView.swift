@@ -7,79 +7,59 @@
 
 import SwiftUI
 
+enum CurrentLight {
+    case red, yellow, green
+}
+
 struct ContentView: View {
     
-    @State var redOpacity = 0.3
-    @State var yellowOpacity = 0.3
-    @State var greenOpacity = 0.3
-    @State var buttonLabel = "START"
+    @State private var redLightState = 0.3
+    @State private var yellowLightState = 0.3
+    @State private var greenLightState = 0.3
     
-    private var redLight: some View {
-        Circle()
-            .frame(width: 123, height: 123)
-            .foregroundColor(.red)
-            .opacity(redOpacity)
-            .overlay(Circle().stroke(Color.white, lineWidth: 4))
-            .shadow(radius: 10)
+    @State private var buttonLabel = "START"
+    
+    @State private var currentLight: CurrentLight = .red
+    
+    private func nextColor() {
+        let lightIsOff = 0.3
+        let lightIsOn = 1.0
+        
+        switch currentLight {
+        case .red:
+            currentLight = .yellow
+            greenLightState = lightIsOff
+            redLightState = lightIsOn
+        case .yellow:
+            currentLight = .green
+            redLightState = lightIsOff
+            yellowLightState = lightIsOn
+        case .green:
+            currentLight = .red
+            yellowLightState = lightIsOff
+            greenLightState = lightIsOn
+        }
     }
+}
 
-    private var yellowLight: some View {
-        Circle()
-            .frame(width: 123, height: 123)
-            .foregroundColor(.yellow)
-            .opacity(yellowOpacity)
-            .overlay(Circle().stroke(Color.white, lineWidth: 4))
-            .shadow(radius: 10)
-    }
-
-    private var greenLight: some View {
-        Circle()
-            .frame(width: 123, height: 123)
-            .foregroundColor(.green)
-            .opacity(greenOpacity)
-            .overlay(Circle().stroke(Color.white, lineWidth: 4))
-            .shadow(radius: 10)
-    }
-    
-    
+extension ContentView {
     var body: some View {
         ZStack {
             Color(.black)
                 .ignoresSafeArea()
             
-            VStack {
-                redLight
-                yellowLight
-                    .padding()
-                greenLight
+            VStack(spacing: 20) {
+                ColorCircleView(color: .red, opacity: redLightState)
+                ColorCircleView(color: .yellow, opacity: yellowLightState)
+                ColorCircleView(color: .green, opacity: greenLightState)
                 
                 Spacer()
-
-                Button(action: {
+                
+                StartButtonView(title: buttonLabel) {
                     if buttonLabel == "START" {
-                        redOpacity = 1.0
                         buttonLabel = "NEXT"
-                    } else if redOpacity == 1.0 {
-                        redOpacity = 0.3
-                        yellowOpacity = 1.0
-                    } else if yellowOpacity == 1.0 {
-                        yellowOpacity = 0.3
-                        greenOpacity = 1.0
-                    } else {
-                        greenOpacity = 0.3
-                        redOpacity = 1.0
                     }
-                }) {
-                    ZStack {
-                        Capsule()
-                            .overlay(Capsule().stroke(Color.white, lineWidth: 4))
-                            .frame(width: 250, height: 80)
-                        Text(buttonLabel)
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                    }
-                    
-                    
+                    nextColor()
                 }
             }
             .padding()
