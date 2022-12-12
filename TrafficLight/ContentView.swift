@@ -61,6 +61,7 @@ extension ContentView {
                     }
                     nextColor()
                 }
+                
             }
             .padding()
         }
