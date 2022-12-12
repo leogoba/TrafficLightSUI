@@ -8,50 +8,32 @@
 import SwiftUI
 
 enum CurrentLight {
-    case red, yellow, green
+    case off, red, yellow, green
 }
 
 struct ContentView: View {
     
-    @State private var redLightState = 0.3
-    @State private var yellowLightState = 0.3
-    @State private var greenLightState = 0.3
-    
     @State private var buttonLabel = "START"
+    @State private var currentLight: CurrentLight = .off
     
-    @State private var currentLight: CurrentLight = .red
-    
-    private func nextColor() {
-        let lightIsOff = 0.3
-        let lightIsOn = 1.0
-        
-        switch currentLight {
-        case .red:
-            currentLight = .yellow
-            greenLightState = lightIsOff
-            redLightState = lightIsOn
-        case .yellow:
-            currentLight = .green
-            redLightState = lightIsOff
-            yellowLightState = lightIsOn
-        case .green:
-            currentLight = .red
-            yellowLightState = lightIsOff
-            greenLightState = lightIsOn
-        }
-    }
-}
-
-extension ContentView {
     var body: some View {
         ZStack {
             Color(.black)
                 .ignoresSafeArea()
             
             VStack(spacing: 20) {
-                ColorCircleView(color: .red, opacity: redLightState)
-                ColorCircleView(color: .yellow, opacity: yellowLightState)
-                ColorCircleView(color: .green, opacity: greenLightState)
+                ColorCircleView(
+                    color: .red,
+                    opacity: currentLight == .red ? 1 : 0.3
+                )
+                ColorCircleView(
+                    color: .yellow,
+                    opacity: currentLight == .yellow ? 1: 0.3
+                )
+                ColorCircleView(
+                    color: .green,
+                    opacity: currentLight == .green ? 1 : 0.3
+                )
                 
                 Spacer()
                 
@@ -63,6 +45,15 @@ extension ContentView {
                 }
             }
             .padding()
+        }
+    }
+    
+    private func nextColor() {
+        switch currentLight {
+        case .off: currentLight = .red
+        case .red: currentLight = .yellow
+        case .yellow: currentLight = .green
+        case .green: currentLight = .off
         }
     }
 }
